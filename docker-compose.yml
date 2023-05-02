@@ -3,6 +3,8 @@ version: "3.7"
 services:
   app:
     build:
+      args:
+        uid: ${UID}
       context: .
     image: excypher-dev:latest
     volumes:
@@ -16,6 +18,7 @@ services:
       - neo4j
 
   neo4j:
-    image: neo4j:3.5
+    image: neo4j:4.2
     environment:
       NEO4J_AUTH: none
+    platform: linux/amd64

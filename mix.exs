@@ -33,7 +33,8 @@ defmodule ExCypher.MixProject do
       {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
-      {:bolt_sips, "~> 2.0", only: [:dev, :test]}
+      {:bolt_sips, "~> 2.0", only: [:dev, :test]},
+      {:dialyxir, "~> 1.3", only: [:dev, :test], runtime: false}
     ]
   end
 

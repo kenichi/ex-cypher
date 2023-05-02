@@ -1,4 +1,4 @@
-FROM elixir:1.10
+FROM elixir:1.14
 
 ARG uid
 ARG workdir=/ex-cypher
