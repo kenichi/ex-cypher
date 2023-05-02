@@ -15,10 +15,7 @@ defmodule ExCypher.Statement do
   # check, maintain and improve the support to the Cypher language in this
   # library.
 
-  @type command_name :: atom
-
-  @spec parse(cmd_name :: String.t(), ast :: term(), Macro.Env.t()) ::
-          String.t() | list()
+  @spec parse(atom(), term(), Macro.Env.t()) :: list()
   def parse(:where, ast, env) do
     ["WHERE", Where.parse(ast, env)]
   end

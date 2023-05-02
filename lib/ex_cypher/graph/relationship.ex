@@ -4,9 +4,8 @@ defmodule ExCypher.Graph.Relationship do
   """
   alias ExCypher.Graph.Component
 
-  @typep assoc_direction :: :-- | :-> | :<-
-  @typep node_or_relationship ::
-           {type :: :node | :relationship, node :: String.t()}
+  @type assoc_direction :: :-- | :-> | :<-
+  @type node_or_relationship :: {:node | :relationship, String.t()}
 
   @doc """
   Returns the Cypher's syntax for a relationship:
@@ -32,31 +31,27 @@ defmodule ExCypher.Graph.Relationship do
       "[r:Rel {\"year\": 1980}]"
   """
 
-  @spec rel() :: String.t()
+  @spec rel() :: Component.ast()
   def rel, do: rel("")
 
-  @spec rel(props :: map()) :: String.t()
-  def rel(props = %{}), do: rel(nil, nil, props)
+  @spec rel(Component.name() | Component.properties()) :: Component.ast()
+  def rel(%{} = props), do: rel(nil, nil, props)
 
-  @spec rel(labels :: list(), props :: map()) :: String.t()
+  @spec rel(Component.name() | Component.labels(), Component.properties()) :: Component.ast()
   def rel(labels, props = %{})
       when is_list(labels),
       do: rel("", labels, props)
 
-  @spec rel(rel_name :: String.t() | atom(), props :: map()) :: String.t()
   def rel(rel_name, props = %{})
       when is_binary(rel_name) or is_atom(rel_name),
       do: rel(rel_name, [], props)
 
-  @spec rel(
-          name :: String.t(),
-          labels :: list(),
-          props :: map()
-        ) :: String.t()
+  @spec rel(Component.name(), Component.labels(), Component.properties()) :: Component.ast()
   def rel(name, labels \\ [], props \\ %{}) do
     Component.escape_relation(name, labels, props) |> to_rel()
   end
 
+  @spec to_rel(list()) :: Component.ast()
   def to_rel(relation) do
     quote do
       unquote(relation)
@@ -70,10 +65,7 @@ defmodule ExCypher.Graph.Relationship do
   @doc """
     Builds associations between nodes and relationships
   """
-  @spec assoc(
-          direction :: assoc_direction,
-          {from :: node_or_relationship, to :: node_or_relationship}
-        ) :: String.t()
+  @spec assoc(assoc_direction, {node_or_relationship, node_or_relationship}) :: Component.ast()
   def assoc(assoc_type, {{from_type, from}, {to_type, to}}) do
     assoc_symbol = assoc_string(assoc_type, from_type, to_type)
 

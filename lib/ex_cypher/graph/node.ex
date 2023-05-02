@@ -32,34 +32,27 @@ defmodule ExCypher.Graph.Node do
       "(a:Node {\"name\": \"mark\", \"age\": 27)"
 
   """
-  @spec node() :: String.t()
+  @spec node() :: Component.ast()
   def node, do: node(nil, nil, nil)
 
-  @spec node(props :: map()) :: String.t()
+  @spec node(Component.labels() | Component.properties()) :: Component.ast()
   def node(props = %{}), do: node(nil, nil, props)
 
-  @spec node(
-          node_name :: Strint.t() | atom(),
-          props :: map()
-        ) :: String.t()
+  @spec node(Component.name() | Component.labels(), Component.properties()) :: Component.ast()
   def node(node_name, props = %{})
       when is_binary(node_name) or is_atom(node_name),
       do: node(node_name, [], props)
 
-  @spec node(labels_list :: [atom()], props :: map()) :: String.t()
   def node(labels_list, props = %{})
       when is_list(labels_list),
       do: node("", labels_list, props)
 
-  @spec node(
-          name :: String.t(),
-          labels :: list(),
-          props :: map()
-        ) :: String.t()
+  @spec node(Component.name(), Component.labels(), Component.properties()) :: Component.ast()
   def node(name, labels \\ [], props \\ %{}) do
     Component.escape_node(name, labels, props) |> to_node()
   end
 
+  @spec to_node(list()) :: Component.ast()
   defp to_node(inner) do
     quote do
       unquote(inner)

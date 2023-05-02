@@ -1,6 +1,14 @@
 defmodule ExCypher.Graph.Component do
   @moduledoc false
 
+  @type wrap_type :: :node | :relation
+  @type escapable :: nil | atom() | list() | map() | String.t()
+  @type ast :: tuple()
+  @type name :: atom() | String.t() | nil
+  @type labels :: [atom()] | nil
+  @type properties :: map() | nil
+
+  @spec wrap(String.t(), wrap_type()) :: String.t()
   def wrap(str, :node), do: "(" <> str <> ")"
 
   def wrap(str, :relation), do: "[" <> str <> "]"
@@ -12,6 +20,7 @@ defmodule ExCypher.Graph.Component do
   # This module provides a way to help converting those contents
   # into a cypher-compliant strings that can be used to build
   # both nodes and relationships arguments.
+  @spec escape_node(name(), labels(), properties()) :: [String.t()]
   def escape_node(node_name \\ "", node_labels \\ [], node_props \\ %{})
 
   def escape_node(node_name, node_labels, props) when props == %{} do
@@ -22,6 +31,7 @@ defmodule ExCypher.Graph.Component do
     [escape(node_name), escape(node_labels), escape(node_props)]
   end
 
+  @spec escape_relation(name(), labels(), properties()) :: [String.t()]
   def escape_relation(rel_name \\ "", rel_labels \\ [], rel_props \\ %{})
 
   def escape_relation(rel_name, rel_labels, props) when props == %{} do
@@ -32,10 +42,12 @@ defmodule ExCypher.Graph.Component do
     [escape(rel_name), escape(rel_labels), escape(rel_props)]
   end
 
+  @spec escape_properties(map()) :: list()
   def escape_properties(props = %{}) do
     [escape(props)]
   end
 
+  @spec escape(escapable()) :: String.t() | [String.t()]
   def escape(nil), do: ""
 
   def escape(element)
